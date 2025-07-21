@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div id="g_id_onload"
+         data-client_id=""
+         data-context="signin"
+         data-ux_mode="popup"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="accountfunctions">
+        <div class="g_id_signin" data-type="standard" style="width:200px; height:80px"></div>
+        <div class="g_id_signout" data-typa="standard" style="width: 80px"></div>
+    </div>
+    
+
+    <script>
+      function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+
+        // Decode token (for testing, not recommended in production).
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        console.log("User ID: " + payload.sub);
+        console.log("Full Name: " + payload.name);
+        console.log("Email: " + payload.email);
+      }
+    </script>
+</body>
+</html>

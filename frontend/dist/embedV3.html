@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cantora+One&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --body: GhostWhite;
+            --accent: DeepSkyBlue;
+            --compliment: #6698FF;
+            --shade: #A8A9AD;
+
+            --smaller-size: calc(min(100vw, 100vh));
+            --larger-size:  calc(max(100vw, 100vh));
+        }
+
+        table.cal {
+            border-collapse: collapse;
+            text-align:center;
+            font-family: "Cantora One", serif;
+            background-color:var(--body);
+            aspect-ratio: 1.2;
+        }
+
+        
+        table.cal tr.cal-header {
+            background-color:var(--accent);
+            color:white;
+            height:10%;
+            border:var(--compliment) solid 1px;
+            border-bottom-width:2px;
+        }
+        
+        table.cal tr.cal-header:not() {
+            background-color:grey;
+        }
+
+        tr.cal-header th {
+            width:calc(100%/7);
+        }
+
+        td.cal-day {
+            border:var(--shade) solid 1px;
+            vertical-align:center;
+            position:relative;
+            z-index:2;
+            user-select: none;
+        }
+
+        td.cal-day:hover {
+            background-color:var(--accent)
+        }
+    </style>
+  </head>
+  <body>
+    
+    <table id="calendar" class="cal" width="400px">
+        <tr class="cal-header">
+            <td colspan="7">February 2025</td>
+        </tr>
+        <tr class="cal-header">
+            <th>Mo</th>
+            <th>Tu</th>
+            <th>W</th>
+            <th>Th</th>
+            <th>F</th>
+            <th>Sa</th>
+            <th>Su</th>
+        </tr>
+    </table>
+    
+    <script>
+
+        function genDateID(date) {
+            return date.toISOString().split('T')[0]
+        }
+
+        function addWeek(startDate) {
+            let day = new Date(startDate);
+
+            const weekRow = document.createElement('tr');
+            weekRow.classList.add('cal-row');
+
+            for(let i = 0; i < 7; i++) {
+                let dayElement = document.createElement('td');
+                let daySpan = document.createElement('span');
+                daySpan.innerText = day.getDate();
+                
+                dayElement.appendChild(daySpan);
+                dayElement.classList.add('cal-day');
+                dayElement.id = genDateID(day)
+                
+                
+                weekRow.appendChild(dayElement);
+                day.setDate(day.getDate() + 1);
+            }
+
+            return weekRow;
+        }
+        
+        for (let i=0; i < 6; i++) {
+            const week = addWeek(
+                new Date(2025, 3, 1 + i * 7)
+            );
+
+            document.getElementById('calendar').appendChild(week)
+        }
+
+        function updateCalendar(calendar, date) {
+                const year = date.getFullYear();
+                const month = date.getMonth();
+
+                const firstDayOfMonth = new Date(year, month, 1);
+                const lastDayOfMonth = new Date(year, month+1, 0);
+
+                function offset(date) {return (date.getDay() + 6) % 7};
+
+                const startOffset = offset(firstDayOfMonth);
+                const body = lastDayOfMonth.getDate();
+                const endOffset = 7 - offset(lastDayOfMonth) - 1;
+
+                const calendarPopulate = startOffset + body + endOffset;
+
+                calendar.innerHTML = ''
+
+                const iterateDate = new Date(firstDayOfMonth)
+                iterateDate.setDate(1 - startOffset);
+                for(let i = 0; i < 35 && i < calendarPopulate; i++) { // Right now the calendar is clamped to a max of 35 results, because anymore would break the css.
+                    addDay(iterateDate, iterateDate.getDay()==0?true:false);
+                    iterateDate.setDate(iterateDate.getDate() + 1)
+}
+
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.min.js"></script>
+    <script>
+      $(".cal-day").fitText(0.2); // Adjust the compression ratio
+      $(".cal-header").fitText(2.1);
+    </script>
+  </body>
+</html>

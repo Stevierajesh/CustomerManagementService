@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .under-construction {
+            color:white; 
+            text-align:center;
+            border:solid 2px white;
+            background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255, 255, 255, 0.137) 5px 7px);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <ul class="nav-links">
+          <li><a href="login.html" class="exit-link" style="color: red;">Exit</a></li>
+          <li><a href="dashboard.html">Main</a></li>
+          <li><a href="finances.html">Finances</a></li>
+          <li><a href="crm.html">CRM</a></li>
+          <li><a href="accounts.html">Account</a></li>
+          <li><a href="products.html">Products</a></li>
+        </ul>
+    </nav>
+    <table width="100%" height="100%">
+        <tr>
+            <td width="60%">
+                <canvas id="profitByMonthBarChart"></canvas>
+            </td>
+            <td class="under-construction">Upcoming list</td>
+        </tr>
+    </table>
+    <script src="https://colorjs.io/dist/color.global.js"></script>
+    <script>
+        const ctx = document.getElementById('profitByMonthBarChart').getContext('2d');
+        
+        const GenerateOkLChPalette = (bands) => {
+            const palette = [];
+            const bucketSize = 360 / bands;
+            for(let band = 0; band <= bands; band++) {
+                let bucket = bucketSize * band
+                const bandColor = new Color("oklch", [.7136, 0.1169, bucket])
+                palette.push(bandColor.toString({format: "rgb"}))
+            };
+            console.log(palette)
+            return palette;
+        }
+        
+        
+        function generateProfitByMonthData() {
+            // Create a dynamic and evenly distributed color Chroma color palette using OkLCh
+            const colorPalette = GenerateOkLChPalette(12);
+
+            // Generate two dates that will determine the start and end point of the query made out to square
+            function createMonthRange(date, offset) {
+                // Define the date that will be offset from the anchor date
+                const offsetDate = new Date(date);
+                offsetDate.setMonth(offsetDate.getMonth()+offset)
+                
+                // Create a copy of the anchor date so that the selected date is not change arbitrarily
+                const anchorDate = new Date(date);
+
+                // Define a helper function that takes a date and makes the selected day of the date, the last day of the month
+                const setDate2EndOfMonth = (date) => {
+                    return date.setFullYear(
+                        date.getFullYear(),
+                        date.getMonth()+1,
+                        0
+                    );}
+                
+                // Check if the anchor date is after the offset date
+                if (anchorDate > offsetDate) {
+                    // If it is, make the anchor date the last day of its month, and the offset day the first day of its month, and return the data according to asc order
+                    setDate2EndOfMonth(anchorDate);
+                    offsetDate.setDate(1);
+                    return {startDate: offsetDate, endDate: anchorDate}
+                } else {
+                    // If it isn't, make the anchor day the first day of its month, and the offset day the last, then return the data in asc order
+                    setDate2EndOfMonth(offsetDate);
+                    anchorDate.setDate(1);
+                    return {startDate: anchorDate, endDate: offsetDate}
+                }
+            }
+
+            // Run the month range function, with the current config, it will return the last day of the current month, and the first day of this month last year.
+            const offset = -12;
+            const selectedDateRange = createMonthRange(new Date(), offset);
+
+            // Query the square environment and recieve payment information between the selected dates
+            const recieveSquareOrdersBetweenDate = (range) => {
+                // Currently this function is yet to be implemented, but for now it returns an array of proper data
+                return [10, 20, 31, 2, 5, -2, -7, 11, 5, -20, 40, 12];
+                // An implmementation of this might look something like this.
+                // POST /v2/orders/search | https://developer.squareup.com/reference/square/orders-api/search-orders
+                // returned query:
+                // .order_entries.[{order_id}...]
+                
+                // We then would use the order_id to retrieve information about the order, such as when it was processed, how much was made, and what kind of service was fulfilled in the order.
+                // GET /v2/orders/{order_id} | https://developer.squareup.com/reference/square/orders-api/retrieve-order
+                // returned query:
+                // .order.line_items.net_amounts.total_money.amount
+                
+                // This would net us the total money earned for an order from the list. This approach is likely slow, so if there are more efficient means of doing so, it might be worth looking into. However, this approach also gives us a comprehensive list of all the data from all of the orders, which makes it easier to track how often a service is used, etc.
+            }
+
+            const data = recieveSquareOrdersBetweenDate();
+
+            // Now we will take all the months imbetween, and generate a new 
+
+            return {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [{
+                    label: 'Profit',
+                    data: data,
+                    backgroundColor: () => {
+                        const result = [];
+                        let i = 0
+                        data.forEach(stat => {
+                            result.push(
+                                stat < 0 ? '#DE3163' : colorPalette[i]
+                            )
+                            i++
+                        })
+                        return result;
+                    }
+                }]
+            }
+        };
+
+        const profitByMonthData = generateProfitByMonthData()
+
+
+        const financeChart = new Chart(ctx, {
+            type: 'bar',
+            data: profitByMonthData,
+            options: {
+                plugins: {legend:{display:false},
+                    title: {
+                        display:true,
+                        color:'white',
+                        text:['Projected Revenues'],
+                        align:'start',
+                        font: {
+                            family: "'Space Grotesk', serif",
+                            size: '24px',
+                            lineHeight: '0.8',
+                            
+                        },
+                        padding: {
+                            top: 20,
+                            bottom: 90 // Moves the title specifically away from the chart elements
+                        }
+                        
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.25)',
+                            tickColor: 'pink'
+                        },
+                        beginAtZero: true,
+                        stacked: true,
+                        ticks: {
+                            font: {
+                                weight: 'bold'
+                            },
+                            color: 'white'
+                        }
+                    },
+                    x: {
+                        stacked: true,
+                        ticks: {
+                            font: {
+                                weight: 'bold'
+                            },
+                            color: 'white'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <footer>
+        © 2025 THEJUS-Interactive. All rights reserved.
+    </footer>
+    <div id="error-notifications-container"></div>
+    
+    <!-- <script src="../js/system.bundle.js" type="module"></script>
+    <script src="../js/auth.bundle.js" type="module"></script> -->
+</body>
+</html>

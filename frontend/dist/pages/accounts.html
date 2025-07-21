@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="login.html" class="exit-link" style="color: red;">Exit</a></li>
+      <li><a href="dashboard.html">Main</a></li>
+      <li><a href="finances.html">Finances</a></li>
+      <li><a href="crm.html">CRM</a></li>
+      <li><a href="accounts.html">Account</a></li>
+      <li><a href="products.html">Products</a></li>
+    </ul>
+  </nav>
+  <div class="under-construction">
+    <div style="font-size: 5em;">Under Construction</div>
+  </div>
+  <style>
+    .under-construction {
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 50px); /* Adjust 50px to the height of your navbar */
+      margin-top: 20px; /* Adjust 50px to the height of your navbar */
+    }
+    .under-construction div {
+      font-weight: bold;
+    }
+  </style>
+  <footer>
+    © 2025 THEJUS-Interactive. All rights reserved.
+  </footer>
+  <div id="error-notifications-container"></div>
+  <script src="../js/system.bundle.js" type="module"></script>
+  <script src="../js/auth.bundle.js" type="module"></script>
+</body>
+</html>

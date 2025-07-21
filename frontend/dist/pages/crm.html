@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Layout</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Your custom styles -->
+    <style>
+        /* General Styling */
+        
+        /* Layout Container */
+        
+
+       h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff; /* Title text color */
+        }
+        .layout-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: stretch; /* Ensure both sections stretch to the same height */
+            width: 90%; /* Ensure some spacing on the sides */
+            height: 80vh;
+            margin: 20px auto; /* Center the content */
+            gap: 20px; /* Add space between sections */
+        }
+        
+        /* Left Section */
+        .left-rectangle {
+            background-color: #363535; /* Light gray */
+            flex: 1; /* Dynamic scaling */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: flex;
+            flex-direction: column; /* Stack appointment items vertically */
+            gap: 10px; /* Space between appointment items */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            max-height: 80vh; /* Ensure it matches the calendar height */
+        }
+        
+        /* Appointment Items */
+        .appointment-item {
+      background-color: #ffffff; /* White background */
+      width: 90%; /* 90% width of the appointments section */
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for items */
+      text-align: center; /* Center align text */
+      font-size: 16px;
+      font-weight: bold;
+      color: #333; /* Text color */
+      transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+      margin-bottom: 9px;
+      margin-left: -80px;
+    }
+
+    
+
+/* Highlight on Hover */
+.add-appointment-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px; /* Adds spacing above the button */
+}
+
+.add-appointment-btn {
+  background-color: #444;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.appointment-item:hover {
+  background-color: #6b92b4; /* Light blue background on hover */
+  border: 2px solid #63bfc5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Ensures it appears above everything */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Prevents full-page scrolling */
+}
+
+/* Modal Content Box */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    max-height: 80vh; /* Restrict the modal height */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-y: auto; /* Enables vertical scrolling when needed */
+}
+
+/* Close (X) Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Form Styling */
+.modal-content form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Labels */
+.modal-content label {
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: left;
+    width: 90%;
+}
+
+/* Input Fields */
+.modal-content input,
+.modal-content select {
+    width: 90%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Buttons Container */
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin-top: 15px;
+}
+
+/* Submit Button */
+.submit-btn {
+    background-color: #444;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 48%;
+}
+
+.submit-btn:hover {
+    background-color: #555;
+    transform: scale(1.05);
+}
+
+/* Cancel Button */
+.cancel-btn {
+    background-color: #bbb;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 48%;
+}
+
+.cancel-btn:hover {
+    background-color: #999;
+    transform: scale(1.05);
+}
+
+/* Dropdown Select */
+.modal-content select {
+    width: 90%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+}
+
+        /* Right Section - Google Calendar */
+        iframe{
+            flex: 1; /* Take up remaining space */
+            border-radius: 8px; /* Optional rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            height: 100%; /* Match the height of the parent container */
+        }
+        .add-appointment-btn:hover {
+  background-color: #555;
+  transform: scale(1.05);
+}
+
+    .appointment-item:hover {
+      background-color: #6b92b4; /* Light blue background on hover */
+      border: 2px solid #63bfc5;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+      cursor: pointer; /* Pointer cursor on hover */
+    }
+
+    #leads-iframe {
+    width: 90vw; /* Full viewport width */
+    height: 100vh; /* Adjust as needed */
+    border: none;
+    display: block;
+    margin: 0 auto;
+}
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .layout-container {
+                flex-direction: column; /* Stack vertically on smaller screens */
+                gap: 20px;
+                width: 100%; /* Full width of the container */
+            }
+        
+            .left-rectangle {
+                width: 95%; /* Make it take full width */
+                height: 60vh; /* Increase height on medium screens */
+            }
+
+            iframe {
+                width: 100%; /* Full width for the iframe */
+                height: auto; /* Adjust height dynamically */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .left-rectangle {
+                font-size: 16px; /* Adjust font size for smaller screens */
+                padding: 15px;
+                height: 70vh; /* Increase height further for smaller screens */
+            }
+        
+            iframe {
+                height: 500px; /* Reduce iframe height for smaller screens */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .left-rectangle {
+                font-size: 14px; /* Further adjust font size */
+                padding: 10px;
+                height: 75vh; /* Further increase height for mobile */
+            }
+        
+            iframe {
+                height: 400px; /* Further reduce iframe height */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="login.html" class="exit-link" style="color: red;">Exit</a></li>
+          <li><a href="dashboard.html">Main</a></li>
+          <li><a href="finances.html">Finances</a></li>
+          <li><a href="crm.html">CRM</a></li>
+          <li><a href="accounts.html">Account</a></li>
+          <li><a href="products.html">Products</a></li>
+        </ul>
+    </nav>
+
+    <!-- Layout Container -->
+    <div class="layout-container">
+        <!-- Left Rectangle -->
+        <div class="left-rectangle">
+            <h2 id="appointmentsHeader">Upcoming Appointments</h2>
+            <div class="appointments-list" style="width: 100%; margin-left: 100px;">
+            </div>
+            <div class="add-appointment-container">
+              <button class="add-appointment-btn">Add an Appointment</button>
+            </div>
+        </div>
+
+        <!-- Google Calendar -->
+        <iframe src="https://calendar.google.com/calendar/embed?src=b28613958d0db09b09bbc3cf854de72e128c0442b12794e231c4a4d08e522067%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0;filter: invert(1);"></iframe>
+
+        <div id="appointmentModal" class="modal">
+            <div class="modal-content">
+                <!-- Close (X) Button -->
+                <span class="close">&times;</span>
+                
+                <h1>Add New Appointment</h1>
+                
+                <!-- Appointment Form -->
+                <form id="appointmentForm">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" required>
+          
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" required>
+          
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone" required>
+          
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="carType">Car Type:</label>
+                    <select id="carType" name="carType" required>
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Coupe">Coupe</option>
+                        <option value="Van">Van</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label for="carMakeAndModel">Car Make and Model:</label>
+                    <input type="text" id="carMakeAndModel" name="carMakeAndModel" required>
+          
+                    <label for="service">Requested Service:</label>
+                    <input type="text" id="service" name="service" required>
+          
+                    <label for="pethair">Pet Hair Removal?</label>
+                    <select id="pethair" name="pethair">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+          
+                    <label for="shampoo">Seats Need Shampooing?</label>
+                    <select id="shampoo" name="shampoo">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                    <label for="appointmentDate">Appointment Date:</label>
+                    <input type="date" id="appointmentDate" required>
+                
+                    <label for="appointmentTime">Appointment Time:</label>
+                    <input type="time" id="appointmentTime" required>
+                    
+                    <!-- Buttons: Submit & Cancel -->
+                    <div class="modal-buttons">
+                        <button type="submit" class="submit-btn">Add Appointment</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+
+    <iframe id="leads-iframe"src="leads.html"></iframe>
+    <footer>
+        © 2025 THEJUS-Interactive. All rights reserved.
+      </footer>
+    <div id="error-notifications-container"></div>
+    <script src="../js/system.bundle.js" type="module"></script>
+    <script src="../js/auth.bundle.js" type="module"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Get modal elements
+    const modal = document.getElementById("appointmentModal");
+
+    modal.style.display = "none";
+
+    const openModalBtn = document.querySelector(".add-appointment-btn"); // Button that opens modal
+    const closeModalBtn = document.querySelector(".close"); // 'X' close button
+    const cancelModalBtn = document.querySelector(".cancel-btn"); // Cancel button
+    const form = document.getElementById("appointmentForm"); // Form inside modal
+
+    // Open Modal
+    openModalBtn.addEventListener("click", function () {
+        modal.style.display = "flex";
+    });
+
+    // Close Modal (X Button)
+    closeModalBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+        form.reset(); // Reset form fields when closed
+    });
+
+    // Close Modal (Cancel Button)
+    cancelModalBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+        form.reset(); // Reset form fields when canceled
+    });
+
+    // Close Modal When Clicking Outside the Modal
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+            form.reset(); // Reset form fields when clicking outside
+        }
+    });
+
+    // Handle Form Submission
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent actual form submission
+
+        // Collect form data
+        const appointmentData = {
+          FirstName: document.getElementById("firstName").value.trim(),
+            LastName: document.getElementById("lastName").value.trim(),
+            Phone: document.getElementById("phone").value.trim(),
+            Email: document.getElementById("email").value.trim(),
+            CarType: document.getElementById("carType").value.trim(),
+            CarMakeAndModel: document.getElementById("carMakeAndModel").value.trim(),
+            Service: document.getElementById("service").value,
+            PetHair: document.getElementById("pethair").checked, // Checkbox returns true/false
+            SeatsShampooed: document.getElementById("shampoo").checked, // Checkbox returns true/false
+            appointmentDate: document.getElementById("appointmentDate").value,
+            appointmentTime: document.getElementById("appointmentTime").value
+        };
+
+        console.log("Appointment Data:", appointmentData); // Debugging output
+
+        if (!appointmentData.FirstName || !appointmentData.LastName || !appointmentData.Phone || 
+            !appointmentData.Email || !appointmentData.Service || !appointmentData.appointmentDate || 
+            !appointmentData.appointmentTime) {
+            console.error("Please fill in all required fields.");
+            return;
+        }
+
+        try {
+            // Send Data to Backend
+            const response = await fetch("http://localhost:7777/appointments", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(appointmentData)
+            });
+
+            const result = await response.json();
+            console.log("Response from server:", result);
+
+            if (response.ok) {
+                alert("Appointment successfully booked!");
+                form.reset(); // Reset the form after successful submission
+                modal.style.display = "none"; // Close the modal
+            } else {
+                alert("Failed to book appointment: " + result.error);
+            }
+        } catch (error) {
+            console.error("Error sending data:", error);
+            alert("Error: Unable to connect to server.");
+        }
+
+        // Close modal and reset form
+        modal.style.display = "none";
+        form.reset();
+    });
+});
+
+    async function fetchAppointmentItems() {
+      try {
+        // Fetch data from the backend
+        const response = await fetch('http://localhost:7777/appointments');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch appointments items');
+        }
+
+        // Parse the JSON response
+        const items = await response.json();
+
+        // Get the container for the appointments list
+        const appointmentsContainer = document.querySelector('.appointments-list');
+
+        // Clear any existing content in the container
+        appointmentsContainer.innerHTML = '';
+
+        // Loop through the fetched items and create appointment-item divs
+        items.forEach(item => {
+          const appointmentDiv = document.createElement('div');
+          appointmentDiv.className = 'appointment-item';
+
+          // Set the content of each appointment item
+          appointmentDiv.textContent = `${item.FirstName} ${item.LastName} - ${item.Service} (${item.appointmentDate} ${item.appointmentTime})`;
+
+          // Add an onclick handler for interactivity (if needed)
+          appointmentDiv.onclick = async () => {
+            try {
+              const appointmentId = item['_id']; // Correctly accessing the _id property
+
+              // Redirect to appointmentDetails.html with the appointment ID as a query parameter
+              window.location.href = `appointmentDetails.html?appointmentId=${appointmentId}`;
+            } catch (error) {
+              console.error('Error handling appointment selection:', error);
+            }
+          };
+
+          // Append the appointment item to the container
+          appointmentsContainer.appendChild(appointmentDiv);
+        });
+
+        console.log('Appointments successfully populated');
+      } catch (error) {
+        console.error('Error fetching appointments items:', error);
+      }
+    }
+    // Call the function when the page loads
+    window.onload = fetchAppointmentItems;
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="1; url=login.html"> <!-- Redirects after 3 seconds -->
+    <title>TrentWEB</title>
+    <style>
+        /* Importing Google Font: Poppins */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        html {
+            background-color: rgb(24, 24, 24);
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            font-weight: 600; /* Slightly bold for a modern look */
+        }
+        /* CSS for spinner */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2); /* Light gray border */
+            border-top: 5px solid white; /* White color for spinner */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 20px; /* Add spacing below the text */
+        }
+        /* Spinner animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>THEJUS-INTERACTIVE</h1>
+    <div class="spinner"></div> <!-- Spinner -->
+</body>
+</html>

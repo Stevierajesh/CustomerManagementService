@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="info">
+    </div>
+
+    <input width="300px" style="aspect-ratio:1.1;" id="postData">
+    <button onclick="sendToServer(3001, 'private/ordersFromRange')">send</button>
+
+    
+    
+    <script>
+        const today = new Date();
+        today.setDate(today.getDate()+1)
+        const lastYear = new Date();
+        lastYear.setFullYear(today.getFullYear()-1);
+
+        console.log(today, lastYear)
+
+        async function sendToServer(port, endpoint) {
+            try {
+                const response = await fetch(`http://localhost:${port}/${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }, // Required for proper JSON parsing
+                    body: JSON.stringify({
+                        example: document.getElementById('postData').value,
+                        timeRange: {
+                            startAt: lastYear.toISOString(),
+                            endAt: today.toISOString()
+                        }
+                    })
+                });
+
+                // Convert response body to JSON before logging it
+                const data = await response.json();
+                console.log("Server Response:", data); // Now it will log the actual response body
+            } catch (e) {
+                console.error(e);
+            }
+            
+        }
+        
+    </script>
+</body>
+    <!-- <script src="server.js"></script> -->
+</html>

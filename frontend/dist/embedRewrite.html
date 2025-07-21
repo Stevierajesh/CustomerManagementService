@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embed</title>
+    <style>
+        :root {
+            --embed-rounding: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: transparent;
+        }
+
+        .embed {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
+            background-color: white;
+            border-radius: var(--embed-rounding);
+            border: 2px solid black; /* Consistent border */
+        }
+
+        .profile-section {
+            width: 33%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; /* Ensure spacing between elements */
+            border-right: 2px solid black;
+            padding: 5vh 2vw;
+            gap: 3vh;
+        }
+
+        .profile-pic {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: lightgray;
+            border-radius: 50%;
+            transform: scale(1); /* Ensures consistent rendering */
+            width: 12vw;
+            height: 12vw;
+            max-width: 150px;
+            max-height: 150px;
+            border: 0.15em solid black; /* Fixed border thickness */
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: black;
+        }
+
+        .name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .appointments {
+            font-size: 1rem;
+            text-align: center justify;
+            border: 0.15em solid black; /* Fixed border thickness */
+            padding: 1rem;
+            border-radius: 5px;
+            width: 90%;
+            flex-grow: 1; /* Allow this element to take up remaining vertical space */
+            display: flex;
+            align-items: top; /* Vertically center text inside */
+            justify-content: center; /* Horizontally center text inside */
+        }
+
+        .calendar-section {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 5vh 2vw;
+            justify-content:space-between;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 2.5vw;
+            font-weight: bold;
+            margin-bottom: 2vh;
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2vh;
+        }
+
+        .day {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: lightgray;
+            border: 0.15em solid black; /* Fixed border thickness */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .day:hover {
+            background-color:cornflowerblue;
+            transform:scale(1.1);
+            cursor:pointer;
+        } .day.booked:hover {
+            cursor:no-drop;
+        }
+
+        .day.booked {
+            background-color: pink;
+        }
+
+        .view-full-calendar {
+            margin-top: 2vh;
+            font-size: 1rem;
+            font-weight: bold;
+            color: blue;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 0.15em solid blue; /* Fixed border thickness */
+            border-radius: 5px;
+            align-self: flex-end;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .view-full-calendar:hover {
+            background-color: blue;
+            color: white;
+        }
+
+        #message {
+            position:fixed;
+            left:0px;
+            width:100vw;
+            top:0px;
+            height:100vh;
+
+            background-color:rgba(29, 28, 28, 0.726);
+            z-index:4;
+
+            border-radius:var(--embed-rounding);
+        }
+
+        #message::before {
+            content:attr(data-message);
+
+            position:fixed;
+            left:25%;
+            width:50%;
+            top:30%;
+            height:40%;
+            margin:0px;
+
+            background-color:white;
+            border-radius:10px;
+            padding:5px;
+            text-align:center;
+        }
+
+        #message::after {
+            content:'Okay';
+            font-size:4vw;
+            text-align:center;
+            
+            position:fixed;
+            width:100%;
+            top:75%;
+
+            color:white;
+        }
+
+        #message:hover {
+            cursor:pointer;
+        }
+    </style>
+    <div id="message" data-message="type not allowed" onclick="removeMessage()"></div>
+</head>
+<body>
+    <div class="embed">
+        <div class="profile-section">
+            <div class="profile-pic">Profile</div>
+            <div class="name">Name</div>
+            <div class="appointments">
+                <p>
+                    You currently have no booked appointments
+                </p>
+            </div>
+        </div>
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <div>M</div>
+                <div>Tu</div>
+                <div>W</div>
+                <div>Th</div>
+                <div>F</div>
+                <div>Sa</div>
+                <div>Su</div>
+            </div>
+            <div id="calendar">
+                <!-- Example Days -->
+                <div class="day"></div>
+                <div class="day booked"></div>
+                <div class="day booked"></div>
+                <div class="day"></div>
+                <div class="day"></div>
+                <div class="day booked"></div>
+                <div class="day"></div>
+                <div class="day booked"></div>
+                <div class="day"></div>
+                <div class="day"></div>
+                <div class="day booked"></div>
+                <div class="day"></div>
+                <div class="day"></div>
+                <div class="day booked"></div>
+                <div class="day"></div>
+                <div class="day booked"></div>
+                <div class="day"></div>
+                <div class="day booked"></div>
+            </div>
+            <div class="view-full-calendar">
+                View full calendar &rarr;
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedDate = new Date(2025, 2, 1);
+
+        function addDay(date, booked = false) {
+            const dayDiv = document.createElement('div')
+            dayDiv.className = `day${booked ? ' booked' : '' }`;
+            dayDiv.id = date.toISOString().split('T')[0];
+            dayDiv.innerText = date.getDate()
+            dayDiv.onclick = booked ? 
+            () => {addMessage('day is already booked')} : 
+            () => {addMessage('not yet implemented')};
+
+            document.getElementById('calendar').appendChild(dayDiv);
+        }
+
+        function addMessage(message) {
+            if (document.getElementById('message')) {console.error(`cannot create message '${message}', a message already exists!`);return;}
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.dataset.message = message;
+            messageDiv.id = 'message';
+            messageDiv.onclick = removeMessage;
+            
+
+            document.body.appendChild(messageDiv)
+        }
+
+        function removeMessage() {
+            const message = document.getElementById('message');
+            message.parentNode.removeChild(message)
+        }
+        
+        function populateCalendar(month, year) {
+            console.log(year)
+
+            const calendar = document.getElementById('calendar')
+
+            const firstDayOfMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(year, month+1, 0);
+
+            function offset(date) {return (date.getDay() + 6) % 7};
+
+            const startOffset = offset(firstDayOfMonth);
+            const body = lastDayOfMonth.getDate();
+            const endOffset = 7 - offset(lastDayOfMonth) - 1;
+
+            const calendarPopulate = startOffset + body + endOffset;
+
+            calendar.innerHTML = ''
+
+            const iterateDate = new Date(firstDayOfMonth)
+            iterateDate.setDate(1 - startOffset);
+            for(let i = 0; i < 35 && i < calendarPopulate; i++) { // Right now the calendar is clamped to a max of 35 results, because anymore would break the css.
+                addDay(iterateDate, iterateDate.getDay()==0?true:false);
+                iterateDate.setDate(iterateDate.getDate() + 1)
+            }
+        }
+
+        populateCalendar(
+            selectedDate.getMonth(),
+            selectedDate.getFullYear()
+        )
+    </script>
+</body>
+</html>
